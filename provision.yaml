@@ -4,7 +4,7 @@ openshift_provision:
   - name: "{{ project_name }}-build"
     process_templates:
     - file: template.yaml
-      params:
+      parameters:
         MAX_MEMORY: 8Gi
         MAX_CPU: "4"
     role_bindings:
@@ -24,7 +24,7 @@ openshift_provision:
   - name: "{{ project_name }}-dev"
     process_templates:
     - file: template.yaml
-      params:
+      parameters:
         MAX_MEMORY: 4Gi
         MAX_CPU: "2"
     role_bindings:
@@ -42,7 +42,7 @@ openshift_provision:
   - name: "{{ project_name }}-int"
     process_templates:
     - file: template.yaml
-      params:
+      parameters:
         MAX_MEMORY: 4Gi
         MAX_CPU: "2"
     role_bindings:
