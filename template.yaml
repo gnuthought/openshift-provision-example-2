@@ -1,0 +1,74 @@
+---
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  annotations:
+    description: example-2
+  name: example-2
+
+parameters:
+- name: MAX_MEMORY
+- name: MAX_CPU
+
+objects:
+- apiVersion: v1
+  kind: ResourceQuota
+  metadata:
+    name: compute
+  spec:
+    hard:
+      requests.cpu: ${MAX_CPU}
+      requests.memory: ${MAX_MEMORY}
+      limits.memory: ${MAX_MEMORY}
+
+- apiVersion: v1
+  kind: LimitRange
+  metadata:
+    name: compute
+  spec:
+    limits:
+    - type: Pod
+      max:
+        cpu: ${MAX_CPU}
+        memory: ${MAX_MEMORY}
+      min:
+        cpu: "100m"
+        memory: "2Mi"
+    - type: Container
+      max:
+        cpu: ${MAX_CPU}
+        memory: ${MAX_MEMORY}
+      min:
+        cpu: "100m"
+        memory: "2Mi"
+      default:
+        cpu: "1"
+        memory: "512Mi"
+      defaultRequest:
+        cpu: "500m"
+        memory: "512Mi"
+      maxLimitRequestRatio:
+        cpu: "10"
+        memory: "2"
+
+- apiVersion: networking.k8s.io/v1
+  kind: NetworkPolicy
+  metadata:
+    name: allow-same-namespace
+  spec:
+    podSelector: {}
+    ingress:
+    - from:
+      - podSelector: {}
+
+- apiVersion: networking.k8s.io/v1
+  kind: NetworkPolicy
+  metadata:
+    name: allow-global-namespaces
+  spec:
+    podSelector: {}
+    ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            network-policy-global: "true"

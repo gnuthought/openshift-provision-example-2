@@ -1,0 +1,60 @@
+---
+openshift_provision:
+  projects:
+  - name: "{{ project_name }}-build"
+    process_templates:
+    - file: template.yaml
+      params:
+        MAX_MEMORY: 8Gi
+        MAX_CPU: "4"
+    role_bindings:
+    - role: admin
+      users:
+      - system:serviceaccount:{{ openshift_provision_namespace }}:{{ project_name }}
+      remove_unlisted: true
+    - role: edit
+      remove_unlisted: true
+    - role: view
+      users:
+      - alice
+      groups:
+      - example-one-dev
+      remove_unlisted: true
+
+  - name: "{{ project_name }}-dev"
+    process_templates:
+    - file: template.yaml
+      params:
+        MAX_MEMORY: 4Gi
+        MAX_CPU: "2"
+    role_bindings:
+    - role: admin
+      users:
+      - system:serviceaccount:{{ openshift_provision_namespace }}:{{ project_name }}
+      remove_unlisted: true
+    - role: edit
+      users:
+      - alice
+      groups:
+      - example-one-dev
+      remove_unlisted: true
+
+  - name: "{{ project_name }}-int"
+    process_templates:
+    - file: template.yaml
+      params:
+        MAX_MEMORY: 4Gi
+        MAX_CPU: "2"
+    role_bindings:
+    - role: admin
+      users:
+      - system:serviceaccount:{{ openshift_provision_namespace }}:{{ project_name }}
+      remove_unlisted: true
+    - role: edit
+      remove_unlisted: true
+    - role: view
+      users:
+      - alice
+      groups:
+      - example-one-dev
+      remove_unlisted: true

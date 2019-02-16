@@ -1,0 +1,136 @@
+---
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  annotations:
+    description: openshift-provision example-2
+  name: provision-example-2
+
+parameters:
+- name: PROJECT_NAME
+  value: provision-example-2
+- name: OPENSHIFT_PROVISION_NAMESPACE
+  value: openshift-provision
+- name: GIT_URI
+  value: https://github.com/gnuthought/openshift-provision-example-2.git
+- name: WEBHOOK_KEY
+  generate: expression
+  from: '[a-zA-Z0-9]{8}'
+
+objects:
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    name: openshift-provision-admin
+    namespace: ${PROJECT_NAME}-build
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: admin
+  subjects:
+  - kind: ServiceAccount
+    name: ${PROJECT_NAME}
+    namespace: ${OPENSHIFT_PROVISION_NAMESPACE}
+
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    name: openshift-provision-admin
+    namespace: ${PROJECT_NAME}-dev
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: admin
+  subjects:
+  - kind: ServiceAccount
+    name: ${PROJECT_NAME}
+    namespace: ${OPENSHIFT_PROVISION_NAMESPACE}
+
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    name: openshift-provision-admin
+    namespace: ${PROJECT_NAME}-int
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: admin
+  subjects:
+  - kind: ServiceAccount
+    name: ${PROJECT_NAME}
+    namespace: ${OPENSHIFT_PROVISION_NAMESPACE}
+
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    name: openshift-provision-resource-manager
+    namespace: ${PROJECT_NAME}-build
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: resource-manager
+  subjects:
+  - kind: ServiceAccount
+    name: ${PROJECT_NAME}
+    namespace: ${OPENSHIFT_PROVISION_NAMESPACE}
+
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    name: openshift-provision-resource-manager
+    namespace: ${PROJECT_NAME}-dev
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: resource-manager
+  subjects:
+  - kind: ServiceAccount
+    name: ${PROJECT_NAME}
+    namespace: ${OPENSHIFT_PROVISION_NAMESPACE}
+
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    name: openshift-provision-resource-manager
+    namespace: ${PROJECT_NAME}-int
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: resource-manager
+  subjects:
+  - kind: ServiceAccount
+    name: ${PROJECT_NAME}
+    namespace: ${OPENSHIFT_PROVISION_NAMESPACE}
+
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    name: ${PROJECT_NAME}
+    namespace: ${OPENSHIFT_PROVISION_NAMESPACE}
+
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: ${PROJECT_NAME}
+    namespace: ${OPENSHIFT_PROVISION_NAMESPACE}
+    labels:
+      openshift-provision.gnuthought.com/config: "true"
+  data:
+    git_uri: ${GIT_URI}
+    check_mode: "true"
+    config_path: provision.yaml
+    service_account: ${PROJECT_NAME}
+    webhook_secret: ${PROJECT_NAME}
+    params: |
+      project_name: ${PROJECT_NAME}
+      openshift_provision_namespace: ${OPENSHIFT_PROVISION_NAMESPACE}
+
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: ${PROJECT_NAME}
+    namespace: ${OPENSHIFT_PROVISION_NAMESPACE}
+    annotations:
+      openshift-provision/action: create
+  stringData:
+    key: ${WEBHOOK_KEY}
