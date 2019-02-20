@@ -10,7 +10,7 @@ openshift_provision:
     role_bindings:
     - role: admin
       users:
-      - system:serviceaccount:{{ openshift_provision_namespace }}:{{ project_name }}
+      - system:serviceaccount:{{ openshift_provision_manager_namespace }}:{{ project_name }}
       remove_unlisted: true
     - role: edit
       remove_unlisted: true
@@ -30,7 +30,7 @@ openshift_provision:
     role_bindings:
     - role: admin
       users:
-      - system:serviceaccount:{{ openshift_provision_namespace }}:{{ project_name }}
+      - system:serviceaccount:{{ openshift_provision_manager_namespace }}:{{ project_name }}
       remove_unlisted: true
     - role: edit
       users:
@@ -48,7 +48,7 @@ openshift_provision:
     role_bindings:
     - role: admin
       users:
-      - system:serviceaccount:{{ openshift_provision_namespace }}:{{ project_name }}
+      - system:serviceaccount:{{ openshift_provision_manager_namespace }}:{{ project_name }}
       remove_unlisted: true
     - role: edit
       remove_unlisted: true
