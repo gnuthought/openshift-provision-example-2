@@ -120,14 +120,14 @@ objects:
     check_mode: "true"
     config_path: provision.yaml
     service_account: ${PROJECT_NAME}
-    webhook_secret: ${PROJECT_NAME}
+    webhook_secret: ${PROJECT_NAME}-webhook
     vars: |
       project_name: ${PROJECT_NAME}
 
 - apiVersion: v1
   kind: Secret
   metadata:
-    name: ${PROJECT_NAME}
+    name: ${PROJECT_NAME}-webhook
     namespace: ${OPENSHIFT_PROVISION_NAMESPACE}
     annotations:
       openshift-provision/action: create
